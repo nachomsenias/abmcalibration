@@ -1,0 +1,90 @@
+# Congiguration for Steady State Genetic Algorithms
+
+# GENERIC PARAMETERS
+# ==================================================
+# Number of threads for parallel computation
+breedthreads	= 1
+evalthreads	= 1
+
+# For restoring from unexpected interruptions
+checkpoint		= false
+checkpoint-prefix	= ec
+checkpoint-modulo	= 1
+
+# Type of state for evolution and breeders
+state		= ec.simple.SimpleEvolutionState
+
+breed		= ec.simple.SimpleBreeder
+pop		= ec.Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+eval		= ec.simple.SimpleEvaluator
+stat		= ec.simple.SimpleStatistics
+exch		= ec.simple.SimpleExchanger
+
+# SPECIFIC PARAMETERS
+# ==================================================
+# Population
+pop.subpops		= 1
+pop.subpop.0		= ec.Subpopulation
+pop.subpop.0.size 		= 20
+pop.subpop.0.duplicate-retries 	= 0
+
+# Type of data
+pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
+
+# Stopping criteria
+generations		= 2
+#evaluations		= 10000
+quit-on-run-complete	= true
+
+# Select the individuals to be replaced
+#steady.deselector.0 =	EcjSteadySelection
+#steady.deselector.0.replace-repeated	= true
+#steady.replacement-probability	= 1.0
+
+# Crossover operator
+#pop.subpop.0.species.crossover-type	= intermediate
+#pop.subpop.0.species.line-extension 	= 0.51
+
+# Mutation operator
+#pop.subpop.0.species.mutation-type	= reset
+#pop.subpop.0.species.mutation-prob	= 0.25
+#pop.subpop.0.species.duplicate-retries = 5
+
+#Decoy parameters needed by ECJ
+pop.subpop.0.species.mutation-prob	=  0.0
+pop.subpop.0.species.likelihood =  0.0
+pop.subpop.0.species.pipe		     	= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0	 =  ec.select.RandomSelection
+
+# Evaluation function
+eval.problem		= EcjModelEvaluation
+
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= $out.stat
+stat.child.0.activate  = true
+stat.child.0.generations  = 1
+stat.num-children = 2
+
+# Custom statistics for using the initial model as solution
+stat.child.0 = EcjInitialSolution
+
+# Hill Climbing strategy
+stat.child.1 = EcjLocalSearch
+stat.child.1.type = l-bfgs
+stat.child.1.frequency	= period
+stat.child.1.period-freq = 2
+stat.child.1.target = best
+stat.child.1.step = 0.01
+stat.child.1.max-iterations = 10000
+stat.child.1.max-evaluations = 10000
+stat.child.1.threshold = 0.001
+  

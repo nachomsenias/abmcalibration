@@ -1,0 +1,105 @@
+# Copyright 2015 by Sean Luke and George Mason University
+# Licensed under the Academic Free License version 3.0
+# See the file "LICENSE" for more information
+
+evalthreads = 				1
+breedthreads = 				1
+
+# For restoring from unexpected interruptions
+checkpoint		= 			false
+checkpoint-prefix	= 		ec
+checkpoint-modulo	= 		1
+
+state = 					ec.simple.SimpleEvolutionState
+finish = 	        		ec.simple.SimpleFinisher
+exch = 						ec.simple.SimpleExchanger
+eval =						ec.simple.SimpleEvaluator
+stat =						ec.simple.SimpleStatistics
+quit-on-run-complete =		true
+
+pop = 						ec.Population
+pop.subpops =				1
+pop.subpop.0 = 				ec.Subpopulation
+pop.subpop.0.duplicate-retries 	= 0
+pop.subpop.0.alternative-generation=true
+
+# CMA-ES will almost certainly not generate duplicate individuals
+pop.subpop.0.duplicate-retries = 0
+
+init =	                    calibration.ecj.eda.CMAESInitializer
+breed =                     calibration.ecj.eda.CMAESBreeder
+pop.subpop.0.species =      calibration.ecj.eda.CMAESSpecies
+pop.subpop.0.species.ind =  ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = ec.simple.SimpleFitness
+
+evaluations		= 			10000
+#evaluations		= 			130
+quit-on-run-complete =		true
+
+# Evaluation function
+eval.problem		= 		EcjModelEvaluation
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= 			$out.stat
+stat.child.0.activate  = 	true
+stat.child.0.generations  = 5
+stat.num-children = 		3
+
+# Custom statistics for using the initial model as solution
+stat.child.0 = 				EcjInitialSolution
+
+# Custom statistics for having snapshots
+stat.child.1 = 				EcjStatisticsSnapshot
+stat.child.1.activate = 	true
+stat.child.1.generations = 	10
+
+# Custom statistics for having evolution data
+stat.child.2 = 				EcjStatisticsPopulation
+stat.child.2.activate	= 	true
+stat.child.2.generations = 	1
+
+#### CMA-ES main parameter
+pop.subpop.0.species.lambda = 15
+#mu = 0.4048636553 ecj uses the effective mu
+pop.subpop.0.species.mu = 6
+pop.subpop.0.species.cc = 0.6962138721
+pop.subpop.0.species.cs = 0.568013196
+pop.subpop.0.species.c1 = 0.4897816442
+pop.subpop.0.species.damps = 4.2939071682
+pop.subpop.0.species.covariance=scaled
+pop.subpop.0.species.sigma = 0.0567475774
+pop.subpop.0.species.alternative-termination = true
+pop.subpop.0.species.mean =                    center	
+
+
+#### CMA-ES must use double vector individuals
+
+#### This gunk must be set even though we don't use it.  Notably
+#### CMA-ES DOES NOT USE THE POPULATION SIZE, but rather relies on lambda.
+#### So we set it to, I dunno, 1 here.
+
+pop.subpop.0.size =                            1
+pop.subpop.0.species.mutation-prob =           0
+pop.subpop.0.species.pipe =                    ec.breed.InitializationPipeline	
+pop.subpop.0.species.mutation-type =           reset
+pop.subpop.0.species.crossover-type =          one
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500
+
+#### These are possible values which you may set, but if you don't then 
+#### CMA-ES will use internal functions to compute appropriate default
+#### values for them.
+
+# pop.subpop.0.species.lambda = 100
+# pop.subpop.0.species.mu =
+# pop.subpop.0.species.cc =	
+# pop.subpop.0.species.cs =	
+# pop.subpop.0.species.c1 =	
+# pop.subpop.0.species.cmu =	
+# pop.subpop.0.species.damps =	
+#
+# pop.subpop.0.species.weight.0 =	
+# pop.subpop.0.species.weight.1 =	
+# ...

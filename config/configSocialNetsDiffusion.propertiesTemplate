@@ -1,0 +1,19 @@
+# Config file for ABMs Clients-Companies
+# Nr of agents
+nrClients=1000
+nrCompanies=1
+# Every each step company takes an action
+companyAction=30
+# Parameter "k" of the graph
+graphLinks=3
+# Segment parameters
+nrSegments=2
+nrAttributes=3
+segmentsConnectivity=CONNECTIVITIES
+segmentInfluences=INFLUENCES
+segmentTalkingProbabilities=TALKING
+segmentSizes=SIZES
+segmentInitialAwarenesses=INITAWARENESS
+segmentAwarenessDecays=DECAY
+biasDensityNetwork=0.1
+experimentType=EXPTYPE

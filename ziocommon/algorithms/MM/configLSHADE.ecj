@@ -1,0 +1,98 @@
+# Congiguration for Differential Evolution 1/best
+
+# GENERIC PARAMETERS
+# ==================================================
+# Number of threads for parallel computation
+breedthreads	= 1
+evalthreads	= 1
+
+# For restoring from unexpected interruptions
+checkpoint		= false
+checkpoint-prefix	= ec
+checkpoint-modulo	= 1
+
+# Type of state for evolution and breeders
+state		= calibration.ecj.multimodal.shade.SHADEEvolutionState
+
+pop		= ec.Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+breed		= calibration.ecj.multimodal.shade.SHADEBreeder
+breed.out-of-bounds-retries = 5
+breed.pbest-rate=0.1
+eval		= ec.simple.SimpleEvaluator
+stat		= ec.simple.SimpleStatistics
+exch		= calibration.ecj.multimodal.shade.SHADEExchanger
+exch.variant=LSHADE
+# Seed for the random number generator
+seed.0		= 4357
+
+# SPECIFIC PARAMETERS
+# ==================================================
+# Population
+pop.subpops		= 1
+pop.subpop.0		= calibration.ecj.multimodal.shade.SHADESubPopulation
+pop.subpop.0.arc-rate= 2.0
+pop.subpop.0.size 		= 100
+pop.subpop.0.duplicate-retries 	= 0
+
+# Type of data
+pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
+pop.subpop.0.species.mutation-bounded = true
+#pop.subpop.0.species.fitness.maximize =false
+
+# Stopping criteria
+#generations		= 200
+evaluations		= 10000
+quit-on-run-complete	= true
+
+# Evaluation function
+eval.problem		= EcjModelEvaluation
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= $out.stat
+stat.child.0.activate  = true
+stat.child.0.generations  = 5
+stat.num-children = 4
+
+# Custom statistics for using the initial model as solution
+stat.child.0 = EcjInitialSolution
+
+# Custom statistics for having snapshots
+stat.child.1 = EcjStatisticsSnapshot
+stat.child.1.activate = true
+stat.child.1.generations = 10
+
+# Custom statistics for having evolution data
+stat.child.2 = EcjStatisticsPopulation
+stat.child.2.activate	= true
+stat.child.2.generations	= 1
+
+# Custom statistic for clearing niches
+stat.child.3 =calibration.ecj.statistics.EcjStatisticsMMPopulation
+stat.child.3.do-final = true
+stat.child.3.radius=0.06
+stat.child.3.niches=1
+
+# DUMMY (but needed) PARAMETERS
+# ==================================================
+# Breeding scheme
+pop.subpop.0.species.pipe			= ec.breed.ReproductionPipeline
+pop.subpop.0.species.pipe.source.0		= ec.select.FirstSelection
+
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size= 2
+pop.subpop.0.species.pipe.source.0.source.1 = same
+
+# Crossover operator
+pop.subpop.0.species.crossover-type	= one
+
+# Mutation operator
+pop.subpop.0.species.mutation-type	= reset
+pop.subpop.0.species.mutation-prob	= 1.0

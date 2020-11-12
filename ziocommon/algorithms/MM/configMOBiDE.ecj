@@ -1,0 +1,116 @@
+# Congiguration for Differential Evolution 1/best
+
+# GENERIC PARAMETERS
+# ==================================================
+# Number of threads for parallel computation
+breedthreads	= 1
+evalthreads	= 1
+
+# For restoring from unexpected interruptions
+checkpoint		= false
+checkpoint-prefix	= ec
+checkpoint-modulo	= 1
+
+
+# Type of state for evolution and breeders
+state		= ec.simple.SimpleEvolutionState
+#state = calibration.ecj.Multimodal.NSGA2MM.NSGA2MM_EvolutionState
+# Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+breed		= calibration.ecj.Multimodal.MOBiDE.MOBiDE_Breeder
+breed.out-of-bounds-retries = 5
+breed.f = 0.8
+breed.cr = 0.9
+breed.f-noise = 0.0
+eval		= calibration.ecj.Multimodal.MOBiDE.MOBiDE_Evaluator
+stat		= ec.simple.SimpleStatistics
+exch		=  ec.simple.SimpleExchanger
+
+# Seed for the random number generator
+seed.0		= 4357
+
+# SPECIFIC PARAMETERS
+# ==================================================
+pop = ec.Population
+pop.subpops = 1
+pop.default-subpop = 0
+pop.subpop.0 = ec.Subpopulation
+pop.subpop.0.duplicate-retries 	= 0
+pop.subpop.0.alternative-generation=true
+pop.subpop.0.size = 100
+
+# Type of data
+pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness = calibration.ecj.Multimodal.MOBiDE.MOBiDE_Fitness
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500  
+
+# Stopping criteria
+#generations		= 200
+evaluations		= 10000
+quit-on-run-complete	= true
+
+#TODO: MODIFY
+# Evaluation function
+eval.problem		= calibration.ecj.EcjModelEvaluation
+eval.problem.accuracy = 0.001
+eval.archive.delta = 0.0000009
+multi.fitness.num-objectives 	= 2
+multi.fitness.maximize.0= true
+multi.fitness.maximize.1= true
+multi.fitness.max.0 =  0
+multi.fitness.min.0 = -1000
+multi.fitness.min.1 = -1
+multi.fitness.max.1 = 0
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= $out.stat
+stat.child.0.activate  = true
+stat.child.0.generations  = 5
+stat.num-children = 4
+
+# Custom statistics for using the initial model as solution
+stat.child.0 = EcjInitialSolution
+
+# Custom statistics for having snapshots
+stat.child.1 = EcjStatisticsSnapshot
+stat.child.1.activate = true
+stat.child.1.generations = 10
+
+# Custom statistics for having evolution data
+stat.child.2 = EcjStatisticsPopulation
+stat.child.2.activate	= true
+stat.child.2.generations	= 1
+
+# Custom statistic for clearing niches
+stat.child.3 =calibration.ecj.statistics.EcjStatisticsMMPopulation
+stat.child.3.do-final = true
+stat.child.3.radius=0.06
+stat.child.3.niches=1
+
+# DUMMY (but needed) PARAMETERS
+# ==================================================
+# Breeding scheme
+pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.likelihood = 1.0
+pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.likelihood = 0.9
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = same
+pop.subpop.0.species.pipe.source.0.source.0.size= 2
+
+
+# Crossover operator
+pop.subpop.0.species.crossover-type= sbx
+pop.subpop.0.species.crossover-distribution-index = 10
+pop.subpop.0.species.likelihood = 0.9
+
+# Mutation operator
+pop.subpop.0.species.mutation-type	= reset
+pop.subpop.0.species.mutation-distribution-index = 50
+pop.subpop.0.species.mutation-bounded = true
+pop.subpop.0.species.mutation-prob	= 0

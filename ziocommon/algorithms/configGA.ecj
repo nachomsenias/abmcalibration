@@ -1,0 +1,103 @@
+# Congiguration for Generational Genetic Algorithms
+
+# GENERIC PARAMETERS
+# ==================================================
+# Number of threads for parallel computation
+breedthreads	= 1
+evalthreads	= 1
+
+# For restoring from unexpected interruptions
+checkpoint		= false
+checkpoint-prefix	= ec
+checkpoint-modulo	= 1
+
+# Type of state for evolution and breeders
+state		= ec.simple.SimpleEvolutionState
+
+pop		= ec.Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+breed		= ec.simple.SimpleBreeder
+eval		= ec.simple.SimpleEvaluator
+stat		= ec.simple.SimpleStatistics
+exch		= ec.simple.SimpleExchanger
+
+# Seed for the random number generator
+seed.0		= 4357
+
+
+# SPECIFIC PARAMETERS
+# ==================================================
+# Population
+pop.subpops		= 1
+pop.subpop.0		= ec.Subpopulation
+pop.subpop.0.size 		= 100
+pop.subpop.0.duplicate-retries 	= 0
+
+# Type of data
+pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
+pop.subpop.0.species.fitness.maximize = false
+
+# Stopping criteria
+#generations		= 200
+evaluations		= 10000
+quit-on-run-complete	= true
+
+# Elitism in the replacement
+breed.elite.0 = 5
+
+# Crossover operator
+pop.subpop.0.species.crossover-type	= intermediate
+pop.subpop.0.species.line-extension 	= 0.25
+
+# Mutation operator
+pop.subpop.0.species.mutation-type	= reset
+pop.subpop.0.species.mutation-prob	= 0.25
+pop.subpop.0.species.duplicate-retries = 5
+
+# Breeding scheme
+pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.likelihood			= 0.2
+pop.subpop.0.species.pipe.source.0		= EcjBlxCrossover
+pop.subpop.0.species.pipe.source.0.alpha = 0.25
+pop.subpop.0.species.pipe.source.0.retries = 3
+pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size	= 3
+pop.subpop.0.species.pipe.source.0.source.1	= same
+
+# Evaluation function
+eval.problem		= EcjModelEvaluation
+
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= $out.stat
+stat.child.0.activate  = true
+stat.child.0.generations  = 5
+stat.num-children = 3
+
+# Custom statistics for having snapshots
+stat.child.0 = EcjStatisticsSnapshot
+stat.child.0.activate = true
+stat.child.0.generations = 10
+
+# Trick to use restarts in the population
+stat.child.1	= EcjSteadyRestart
+stat.child.1.activate	= true
+stat.child.1.max-restarts	= 10
+stat.child.1.min-generations	= 10
+stat.child.1.max-generations	= 30
+stat.child.1.threshold	= 0.0001
+
+# Custom statistics for having evolution data
+stat.child.2 = EcjStatisticsPopulation
+stat.child.2.activate	= true
+stat.child.2.generations	= 1
+
+
+

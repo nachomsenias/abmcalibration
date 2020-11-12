@@ -1,0 +1,105 @@
+# Congiguration for Genetic Algorithm with Sharing
+
+# GENERIC PARAMETERS
+# ==================================================
+# Number of threads for parallel computation
+breedthreads	= 1
+evalthreads	= 1
+
+# For restoring from unexpected interruptions
+checkpoint		= false
+checkpoint-prefix	= ec
+checkpoint-modulo	= 1
+
+# Type of state for evolution and breeders
+state		= ec.simple.SimpleEvolutionState
+
+breed		= calibration.ecj.Multimodal.NicheGABreeder
+pop		= ec.Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+eval		= ec.simple.SimpleEvaluator
+stat		= ec.simple.SimpleStatistics
+exch		= ec.simple.SimpleExchanger
+
+# SPECIFIC PARAMETERS
+# ==================================================
+#Breeder
+breed.kniches = 1
+breed.radius= 0.03
+breed.nichemethod = clearing
+
+# Population
+pop.subpops		= 1
+pop.subpop.0		= ec.Subpopulation
+pop.subpop.0.size 		= 100
+pop.subpop.0.duplicate-retries 	= 1
+
+# Type of data
+pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= calibration.ecj.Multimodal.MMDoubleVectorIndividual
+pop.subpop.0.species.ind.alpha = 0.3
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
+
+# Stopping criteria
+#generations		= 200
+evaluations			= 10000
+quit-on-run-complete	= true
+
+
+# Crossover operator
+pop.subpop.0.species.crossover-type	= intermediate
+pop.subpop.0.species.line-extension 	= 0.51
+
+# Mutation operator
+pop.subpop.0.species.mutation-type	= gauss
+pop.subpop.0.species.mutation-stdev = 1
+pop.subpop.0.species.mutation-bounded = true
+pop.subpop.0.species.mutation-prob	= 0.25
+pop.subpop.0.species.duplicate-retries = 5
+
+# Breeding scheme
+pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.likelihood			= 0.4
+pop.subpop.0.species.pipe.source.0		= EcjBlxCrossover
+pop.subpop.0.species.pipe.source.0.alpha 	= 0.3
+pop.subpop.0.species.pipe.source.0.retries 	= 3
+pop.subpop.0.species.pipe.source.0.source.0	=  ec.select.SUSSelection
+pop.subpop.0.species.pipe.source.0.source.1	=  ec.select.SUSSelection
+pop.subpop.0.species.pipe.source.0.source.0.shuffle=true
+pop.subpop.0.species.pipe.source.0.source.1.shuffle=true 
+base.shuffle=true
+
+# Evaluation function
+eval.problem		= EcjModelEvaluation
+
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= $out.stat
+stat.child.0.activate  = true
+stat.child.0.generations  = 5
+stat.num-children = 4
+
+# Custom statistics for using the initial model as solution
+stat.child.0 = EcjSteadyInitialSolution
+
+# Custom statistics for having snapshots
+stat.child.1 = EcjStatisticsSnapshot
+stat.child.1.activate = true
+stat.child.1.generations = 10
+
+# Custom statistics for having evolution data
+stat.child.2 = EcjStatisticsPopulation
+stat.child.2.activate	= true
+stat.child.2.generations	= 1
+
+# Custom statistic for clearing niches
+stat.child.3 =calibration.ecj.statistics.EcjStatisticsMMPopulation
+stat.child.3.do-final = true
+stat.child.3.radius=0.06
+stat.child.3.niches=1
+

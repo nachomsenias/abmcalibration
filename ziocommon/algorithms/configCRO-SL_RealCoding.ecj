@@ -1,0 +1,135 @@
+# Congiguration for Coral Reef Algorithms
+
+# GENERIC PARAMETERS
+# ==================================================
+# Number of threads for parallel computation
+breedthreads	= 1
+evalthreads	= 1
+
+# For restoring from unexpected interruptions
+checkpoint		= false
+checkpoint-prefix	= ec
+checkpoint-modulo	= 1
+
+# Type of state for evolution and breeders
+state		= calibration.ecj.CoralReefOptimizer.CROEvolutionState
+
+breed		= calibration.ecj.CoralReefOptimizer.CROSLBreeder
+pop		= ec.Population
+init		= ec.simple.SimpleInitializer
+finish		= ec.simple.SimpleFinisher
+eval		= ec.simple.SimpleEvaluator
+stat		= ec.simple.SimpleStatistics
+exch		= ec.simple.SimpleExchanger
+
+# Seed for the random number generator
+seed.0		= 4357
+
+
+# SPECIFIC PARAMETERS
+# ==================================================
+#Breeder
+breed.cro_k=3
+breed.cro_fa=0.05
+breed.cro_fb=0.9
+breed.cro_fd=0.05
+breed.cro_pd=0.15
+breed.cro_hmcr=0.8
+breed.cro_par=0.2
+breed.cro_delta=0.05
+breed.cro_cr=0.25
+breed.cro_func=0.2
+
+
+
+# Population
+pop.subpops		= 1
+pop.subpop.0		=  calibration.ecj.CoralReefOptimizer.CoralSubPopulation
+pop.subpop.0.size 		= 50
+pop.subpop.0.duplicate-retries 	= 2
+pop.subpop.0.cro_r0 = 0.6
+
+# Type of data
+pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= calibration.ecj.CoralReefOptimizer.DoubleCoral
+pop.subpop.0.species.ind.distribution-index = 10
+pop.subpop.0.species.ind.alpha	= 0.35
+pop.subpop.0.species.min-gene	= 0
+pop.subpop.0.species.max-gene 	= 500
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
+
+
+# Stopping criteria
+#generations		= 10
+evaluations		= 10000
+quit-on-run-complete	= true
+
+
+# Crossover operator
+pop.subpop.0.species.crossover-type	= intermediate
+pop.subpop.0.species.line-extension 	= 0.51
+
+# Mutation operator
+pop.subpop.0.species.mutation-type	= gauss
+pop.subpop.0.species.mutation-stdev	= 0.005
+pop.subpop.0.species.mutation-prob	= 0.3
+pop.subpop.0.species.duplicate-retries = 5
+pop.subpop.0.species.mutation-bounded = true
+
+
+# Dummy Breeding scheme
+pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.likelihood			= 0.2
+pop.subpop.0.species.pipe.source.0		= EcjBlxCrossover
+pop.subpop.0.species.pipe.source.0.alpha 	= 0.51
+pop.subpop.0.species.pipe.source.0.retries 	= 3
+pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size= 3
+pop.subpop.0.species.pipe.source.0.source.1	= same
+
+# Evaluation function
+eval.problem		= EcjModelEvaluation
+
+
+# LOG INFO
+# ==================================================
+# Standard ecj statistics
+stat.file		= $out.stat
+stat.child.0.activate  = true
+stat.child.0.generations  = 5
+stat.num-children = 5
+
+# Custom statistics for using the initial model as solution
+stat.child.0 = EcjInitialSolution
+
+# Hill Climbing strategy
+stat.child.1 = EcjLocalSearch
+stat.child.1.type = hill-climbing
+stat.child.1.frequency	= final
+#stat.child.1.period-freq = 20
+stat.child.1.target = best
+stat.child.1.max-iterations = 100
+stat.child.1.threshold = 0.001
+stat.child.1.step = 0.001
+stat.child.1.neighborhood = single-step
+
+# Custom statistics for having snapshots
+stat.child.2 = EcjStatisticsSnapshot
+stat.child.2.activate = true
+stat.child.2.generations = 10
+
+# Custom statistics for having evolution data
+stat.child.3 = EcjStatisticsPopulation
+stat.child.3.activate	= true
+stat.child.3.generations	= 1
+
+# Trick to use restarts in the population
+stat.child.4	= EcjSteadyRestart
+stat.child.4.activate	= true
+stat.child.4.max-restarts	= 1
+stat.child.4.min-generations	= 40
+stat.child.4.max-generations	= 20
+stat.child.4.threshold	= 0.0001
+
+
+

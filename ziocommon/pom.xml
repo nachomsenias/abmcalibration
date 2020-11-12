@@ -1,0 +1,103 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>abmcalibration</groupId>
+  <artifactId>commons</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>ziocommon</name>
+  <url>http://maven.apache.org</url>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <dependencies>
+
+	<dependency>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>fluent-hc</artifactId>
+	  <version>4.5.2</version>
+	</dependency>
+	<!-- TestGCPConnection -->
+    <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client-jetty</artifactId>
+      <version>1.22.0</version>
+	</dependency>
+	<dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-compute</artifactId>
+      <version>v1-rev135-1.22.0</version>
+    </dependency>
+    <!-- TestJClouds -->
+    <!-- https://mvnrepository.com/artifact/org.apache.jclouds/jclouds-core -->
+	<dependency>
+	    <groupId>org.apache.jclouds</groupId>
+	    <artifactId>jclouds-core</artifactId>
+	    <version>2.0.0</version>
+	</dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.jclouds.labs/googlecloud -->
+	<dependency>
+	    <groupId>org.apache.jclouds.labs</groupId>
+	    <artifactId>googlecloud</artifactId>
+	    <version>1.9.3</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.jclouds.labs/google-compute-engine -->
+	<dependency>
+	    <groupId>org.apache.jclouds.labs</groupId>
+	    <artifactId>google-compute-engine</artifactId>
+	    <version>1.9.3</version>
+	</dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.jclouds/jclouds-compute -->
+	<dependency>
+	    <groupId>org.apache.jclouds</groupId>
+	    <artifactId>jclouds-compute</artifactId>
+	    <version>2.0.0</version>
+	</dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.jclouds.driver/jclouds-sshj -->
+	<dependency>
+	    <groupId>org.apache.jclouds.driver</groupId>
+	    <artifactId>jclouds-sshj</artifactId>
+	    <version>2.0.0</version>
+	    <!-- Exclude Project-E from Project-B -->
+	    <!-- 
+	    <exclusions>
+	        <exclusion>
+	          <groupId>org.bouncycastle</groupId> 
+	          <artifactId>bcprov-ext-jdk15on</artifactId>
+	        </exclusion>
+      	</exclusions>  -->
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.jclouds.driver/jclouds-enterprise -->
+	<dependency>
+	    <groupId>org.apache.jclouds.driver</groupId>
+	    <artifactId>jclouds-enterprise</artifactId>
+	    <version>2.0.0</version>
+	    <scope>provided</scope>
+	</dependency>
+	<!-- BC -->
+	<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+	
+	<dependency>
+	    <groupId>abmcalibration</groupId>
+	    <artifactId>framework</artifactId>
+	    <version>2.1-SNAPSHOT</version>
+	</dependency>
+	
+	
+  </dependencies>
+</project>
