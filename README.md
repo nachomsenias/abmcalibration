@@ -7,6 +7,6 @@ ECJ code for the algorithms is located at common/algorithms and <i>instances</i>
 
 The main class running calibration is [ExecuteCalibration](ziocommon/src/main/java/es/ugr/sci2s/soccer/util/ExecuteCalibration.java). An example of how to run this class would be the following:
 
-java -jar runableJarFromExecuteCalibration.jar <some json from instances like [this](instances/0TP/fast/input_aw_wom_fast.json)> <folder for dumping results> "--algorithm=pathToSomeECJFile.ecj" "--repeate=5"
+java -jar runableJarFromExecuteCalibration.jar <some json from instances like [this](instances/0TP/fast/input_aw_wom_fast.json)> <folder for dumping results> "--algorithm=pathToSomeECJFile.ecj" "--repeate=<number-of-runs>"
   
 [RunExpermients.sh](common/instances/RunExperiments.sh) contains a shell script example for running the code.
